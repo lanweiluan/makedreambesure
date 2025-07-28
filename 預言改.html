@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>夢想預言占卜</title>
+  <style>
+    body {
+      background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+      color: #fff;
+      font-family: "Segoe UI", "微軟正黑體", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      letter-spacing: 2px;
+    }
+
+    .form-group {
+      margin: 0.5rem 0;
+    }
+
+    input, select {
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #7b68ee;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #6a5acd;
+    }
+
+    .result {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      min-height: 2rem;
+      text-align: center;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      background: url('https://i.imgur.com/9tKxT9z.png') repeat top center;
+      animation: sparkle 30s linear infinite;
+      opacity: 0.4;
+    }
+
+    @keyframes sparkle {
+      from { background-position: 0 0; }
+      to { background-position: 10000px 10000px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <h1>夢想能否成真？</h1>
+  <div class="form-group">
+    星座（必填）<br>
+    <input type="text" id="zodiac" required>
+  </div>
+  <div class="form-group">
+    血型（必填）<br>
+    <select id="blood">
+      <option value="">請選擇</option>
+      <option value="A型">A型</option>
+      <option value="B型">B型</option>
+      <option value="AB型">AB型</option>
+      <option value="O型">O型</option>
+    </select>
+  </div>
+  <div class="form-group">
+    生肖（必填）<br>
+    <input type="text" id="animal" required>
+  </div>
+  <div class="form-group">
+    MBTI（可選）<br>
+    <input type="text" id="mbti">
+  </div>
+  <div class="form-group">
+    姓名（可選）<br>
+    <input type="text" id="name">
+  </div>
+  <button onclick="generateFortune()">啟示未來</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    const phrases = [
+      "你如蛇潛行，步步堅實，夢想終將開花。",
+      "金牛踏實，A型堅忍，夢想將於靜中實現。",
+      "穩重如你，夢想雖遠，終會照進現實。",
+      "內斂堅持者，星辰不負，夢定能圓。",
+      "心靜如水，志堅如鐵，夢想將在時至時現。",
+      "你耕耘默默，夢想悄然結果。",
+      "靜守初心，步步為營，夢想自成真。",
+      "你行穩致遠，夢已悄悄靠近。",
+      "夢想如光，你如夜行者，遲早照耀前路。",
+      "深藏不露者，最終綻放最耀眼的花。"
+    ];
+
+    let lastIndex = -1;
+
+    function generateFortune() {
+      const zodiac = document.getElementById("zodiac").value.trim();
+      const blood = document.getElementById("blood").value;
+      const animal = document.getElementById("animal").value.trim();
+      if (!zodiac || !blood || !animal) {
+        alert("請填寫星座、血型與生肖！");
+        return;
+      }
+
+      let index;
+      do {
+        index = Math.floor(Math.random() * phrases.length);
+      } while (index === lastIndex);
+      lastIndex = index;
+
+      document.getElementById("result").innerText = phrases[index];
+    }
+  </script>
+</body>
+</html>
