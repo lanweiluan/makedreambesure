@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>命運預言：單一整合版</title>
+  <style>
+    body { font-family: "Noto Sans TC", sans-serif; background: #f4f4f8; padding: 20px; }
+    h1 { text-align: center; color: #444; }
+    .input-group { margin: 10px 0; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; }
+    select, input[type=text] {
+      width: 100%; padding: 8px; font-size: 16px; box-sizing: border-box;
+    }
+    button {
+      display: block; margin: 20px auto; padding: 10px 20px;
+      font-size: 18px; background: #007BFF; color: #fff; border: none; border-radius: 5px;
+    }
+    #result {
+      margin-top: 30px; font-size: 20px; text-align: center;
+      padding: 20px; background: #fffbe6; border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>命運預言生成器</h1>
+
+  <div class="input-group">
+    <label for="zodiac">星座：</label>
+    <select id="zodiac">
+      <option value="">請選擇</option>
+      <option>牡羊座</option><option>金牛座</option><option>雙子座</option>
+      <option>巨蟹座</option><option>獅子座</option><option>處女座</option>
+      <option>天秤座</option><option>天蠍座</option><option>射手座</option>
+      <option>摩羯座</option><option>水瓶座</option><option>雙魚座</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label for="blood">血型：</label>
+    <select id="blood">
+      <option value="">請選擇</option>
+      <option>A型</option><option>B型</option><option>AB型</option><option>O型</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label for="animal">生肖：</label>
+    <select id="animal">
+      <option value="">請選擇</option>
+      <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
+      <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
+      <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label for="mbti">MBTI（選填）：</label>
+    <input type="text" id="mbti" placeholder="例如：INTJ、ENFP...">
+  </div>
+
+  <button onclick="generatePrediction()">啟示未來</button>
+  <div id="result">請選擇資料並點擊按鈕</div>
+
+  <script>
+    function getRandom(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    const zodiac = {
+      牡羊座: ["熱情主動", "行動迅速", "勇往直前"],
+      金牛座: ["務實可靠", "有耐心", "腳踏實地"],
+      雙子座: ["反應快", "口才佳", "靈活多變"],
+      巨蟹座: ["體貼細心", "情感豐富", "溫柔敦厚"],
+      獅子座: ["領導力強", "自信大方", "充滿活力"],
+      處女座: ["一絲不苟", "理性分析", "追求完美"],
+      天秤座: ["優雅和諧", "善於交際", "公平客觀"],
+      天蠍座: ["神秘堅毅", "目標明確", "深思熟慮"],
+      射手座: ["自由奔放", "樂觀誠懇", "愛冒險"],
+      摩羯座: ["踏實努力", "目標明確", "責任心強"],
+      水瓶座: ["創意思維", "特立獨行", "思想開放"],
+      雙魚座: ["浪漫溫柔", "直覺敏銳", "善解人意"]
+    };
+
+    const blood = {
+      A型: ["謹慎細膩", "守時守信", "有責任感"],
+      B型: ["活潑自由", "創意豐富", "熱情開朗"],
+      AB型: ["理性冷靜", "獨立自信", "多元包容"],
+      O型: ["開朗大方", "領導能力", "果斷行動"]
+    };
+
+    const animal = {
+      鼠: ["聰明靈巧", "反應敏捷", "機智應變"],
+      牛: ["勤奮踏實", "穩重可靠", "吃苦耐勞"],
+      虎: ["勇猛果斷", "正義感強", "敢於挑戰"],
+      兔: ["溫和親切", "細膩體貼", "靈敏聰慧"],
+      龍: ["氣宇非凡", "魅力十足", "領導風範"],
+      蛇: ["冷靜沈著", "謀略過人", "理智細膩"],
+      馬: ["熱情奔放", "行動快速", "樂觀積極"],
+      羊: ["溫柔敦厚", "內斂穩定", "善解人意"],
+      猴: ["聰明伶俐", "變通靈活", "幽默風趣"],
+      雞: ["精明幹練", "直言不諱", "觀察入微"],
+      狗: ["忠誠守信", "正直善良", "守護他人"],
+      豬: ["厚道真誠", "寬厚待人", "福氣充沛"]
+    };
+
+    const mbti = {
+      INTJ: ["邏輯縝密", "目光遠大", "冷靜判斷"],
+      INTP: ["創意思維", "理論強悍", "分析高手"],
+      ENTJ: ["領導決策", "目標明確", "行動果斷"],
+      ENTP: ["多才多藝", "反應靈敏", "勇於創新"],
+      INFJ: ["理想主義", "感受細膩", "富有洞察"],
+      INFP: ["重視情感", "同理心強", "追求真我"],
+      ENFJ: ["熱心助人", "溝通力強", "影響他人"],
+      ENFP: ["熱情洋溢", "創意十足", "感染力強"],
+      ISTJ: ["責任感強", "實事求是", "一絲不苟"],
+      ISFJ: ["忠誠貼心", "願意奉獻", "務實安定"],
+      ESTJ: ["效率導向", "組織力強", "果斷執行"],
+      ESFJ: ["樂於助人", "擅長協調", "溫暖有禮"],
+      ISTP: ["冷靜獨立", "動手能力強", "重視實用"],
+      ISFP: ["善良溫柔", "感性藝術", "順其自然"],
+      ESTP: ["冒險精神", "臨機應變", "實幹快狠"],
+      ESFP: ["活力十足", "樂觀自信", "人際關係佳"]
+    };
+
+    function generatePrediction() {
+      const z = document.getElementById("zodiac").value;
+      const b = document.getElementById("blood").value;
+      const a = document.getElementById("animal").value;
+      const m = document.getElementById("mbti").value.toUpperCase();
+
+      let result = [];
+
+      if (zodiac[z]) result.push(getRandom(zodiac[z]));
+      if (blood[b]) result.push(getRandom(blood[b]));
+      if (animal[a]) result.push(getRandom(animal[a]));
+      if (mbti[m]) result.push(getRandom(mbti[m]));
+
+      document.getElementById("result").innerText =
+        result.length > 0 ? "你的命運預言是：\n「" + result.join("、") + "」" : "請至少選擇一項！";
+    }
+  </script>
+</body>
+</html>
