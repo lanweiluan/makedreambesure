@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title></title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      padding: 20px;
+      background-color: #fff;
+      color: #222;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    select, input {
+      font-size: 16px;
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <label for="zodiac">星座：</label>
+  <select id="zodiac">
+    <option>牡羊座</option><option>金牛座</option><option>雙子座</option><option>巨蟹座</option>
+    <option>獅子座</option><option>處女座</option><option>天秤座</option><option>天蠍座</option>
+    <option>射手座</option><option>魔羯座</option><option>水瓶座</option><option>雙魚座</option>
+  </select>
+
+  <label for="blood">血型：</label>
+  <select id="blood">
+    <option>A型</option><option>B型</option><option>O型</option><option>AB型</option>
+  </select>
+
+  <label for="animal">生肖：</label>
+  <select id="animal">
+    <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
+    <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
+    <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
+  </select>
+
+  <label for="mbti">MBTI（可略過）：</label>
+  <input id="mbti" placeholder="如 INFP, ESTJ 等" />
+
+  <button onclick="reveal()">啟示未來</button>
+
+  <div id="result"></div>
+
+  <script>
+    const zodiacQuotes = ["果斷自信", "溫和堅毅", "靈巧善變", "敏感體貼", "熱情領袖", "細膩踏實", "平衡冷靜", "神秘深沉", "開朗誠懇", "穩重可靠", "創新獨立", "感性溫柔"];
+    const bloodQuotes = ["謹慎負責", "活潑外向", "樂觀親切", "理性冷靜"];
+    const animalQuotes = ["機警靈巧", "勤奮務實", "勇敢果敢", "仁慈溫順", "充滿朝氣", "睿智冷靜", "行動快速", "善良體貼", "聰明機靈", "細心守信", "忠誠正直", "隨和善良"];
+    const mbtiQuotes = ["冷靜分析", "勇於創新", "靈感豐富", "邏輯嚴謹", "同理心強", "喜愛探索", "堅定果斷", "擅長觀察", "務實理性", "敏銳思考", "內斂思維", "協作能力強", "樂觀進取", "果敢直率", "忠於理念", "重視細節"];
+    const endings = ["夢想值得相信！", "你能踏實前進！", "成真不遠，只差一步。", "未來屬於你。", "你的堅持會開花結果。", "相信自己最重要。", "夢想終將照亮你的人生。", "你正走在對的路上。", "願望會如實呈現。", "你的努力非常值得。"];
+
+    function getRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function reveal() {
+      const mbtiInput = document.getElementById("mbti").value.trim();
+      const zodiac = getRandom(zodiacQuotes);
+      const blood = getRandom(bloodQuotes);
+      const animal = getRandom(animalQuotes);
+      const mbti = mbtiInput ? getRandom(mbtiQuotes) : "";
+      const ending = getRandom(endings);
+
+      const result = `${zodiac}、${blood}、${animal}` + (mbti ? `、${mbti}` : "") + `。${ending}`;
+      document.getElementById("result").innerText = result;
+    }
+  </script>
+</body>
+</html>
