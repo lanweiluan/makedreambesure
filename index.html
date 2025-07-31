@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    label, select, input, button {
+      margin: 10px;
+      font-size: 18px;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <label>星座：</label>
+    <select id="zodiac">
+      <option>牡羊座</option><option>金牛座</option><option>雙子座</option><option>巨蟹座</option>
+      <option>獅子座</option><option>處女座</option><option>天秤座</option><option>天蠍座</option>
+      <option>射手座</option><option>魔羯座</option><option>水瓶座</option><option>雙魚座</option>
+    </select><br>
+
+    <label>血型：</label>
+    <select id="blood">
+      <option>A型</option><option>B型</option><option>O型</option><option>AB型</option>
+    </select><br>
+
+    <label>生肖：</label>
+    <select id="animal">
+      <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
+      <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
+      <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
+    </select><br>
+
+    <label>MBTI（可略過）：</label>
+    <input type="text" id="mbti" placeholder="如 INFP"><br>
+
+    <button onclick="generate()">啟示未來</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const zodiacTraits = {
+      "牡羊座": ["勇氣十足", "熱情洋溢", "充滿幹勁", "行動果斷", "不怕挑戰", "有領導力", "積極進取", "熱血激昂", "自信堅定", "堅持到底"],
+      "金牛座": ["穩重可靠", "務實踏實", "耐心十足", "溫柔體貼", "忠誠守信", "堅持原則", "值得信賴", "情感真誠", "注重細節", "努力不懈"],
+      "雙子座": ["反應靈敏", "多才多藝", "口才極佳", "適應力強", "思維跳躍", "樂觀活潑", "善於溝通", "觀察敏銳", "擅長學習", "變化自如"],
+      "巨蟹座": ["情感豐富", "家庭觀強", "溫柔關懷", "敏感細膩", "直覺敏銳", "願意付出", "體貼入微", "重視感情", "懂得照顧", "安定可靠"],
+      "獅子座": ["領袖魅力", "自信耀眼", "慷慨大方", "勇敢直率", "光芒萬丈", "保護他人", "充滿正氣", "熱心助人", "堅定信念", "目標明確"],
+      "處女座": ["細心周到", "完美主義", "分析能力", "理性務實", "責任感強", "條理分明", "高標準", "觀察入微", "認真負責", "誠實可靠"],
+      "天秤座": ["平衡感佳", "氣質優雅", "擅長協調", "重視和諧", "有美感", "優柔寡斷中藏智慧", "待人親切", "社交高手", "理解他人", "富有人情味"],
+      "天蠍座": ["神秘深沉", "意志堅定", "情感強烈", "觀察敏銳", "堅韌不拔", "不輕言放棄", "深思熟慮", "忠誠真摯", "目標明確", "行動果決"],
+      "射手座": ["自由奔放", "樂觀積極", "熱愛冒險", "心胸開闊", "誠實直接", "思維開放", "不拘小節", "富有幽默", "不畏未來", "喜愛學習"],
+      "魔羯座": ["努力上進", "務實穩重", "耐力驚人", "責任心重", "嚴謹自律", "腳踏實地", "深思熟慮", "內斂可靠", "目標導向", "善於規劃"],
+      "水瓶座": ["創意十足", "思想前衛", "追求自由", "獨立自主", "想法獨特", "重視理念", "友善包容", "好奇求知", "樂於創新", "反傳統思維"],
+      "雙魚座": ["感性豐富", "富有想像", "溫柔體貼", "具藝術感", "心地善良", "容易感動", "夢想多彩", "樂於助人", "感情真摯", "有同理心"]
+    };
+
+    const bloodTraits = {
+      "A型": ["有責任感", "守秩序", "謹慎細心", "有原則", "內斂溫和", "重視他人", "耐心十足", "專注力高", "做事有條理", "忠誠可靠"],
+      "B型": ["創意豐富", "活潑外向", "直率爽朗", "適應力強", "樂觀開朗", "自我風格", "熱情友善", "想像力強", "敢於表現", "隨和自在"],
+      "O型": ["果斷有力", "親和力強", "大方熱情", "領導潛質", "重感情", "善於交際", "活力充沛", "信心十足", "包容心強", "具有影響力"],
+      "AB型": ["理性客觀", "冷靜聰明", "直覺敏銳", "冷熱交融", "思考縝密", "觀察細膩", "獨立思考", "平衡自我", "創造力強", "神秘特質"]
+    };
+
+    const animalTraits = {
+      "鼠": ["聰明伶俐", "機靈反應快", "積極進取", "懂得觀察", "機會掌握強", "思維清晰", "有策略", "富有幽默", "反應敏捷", "靈巧敏銳"],
+      "牛": ["誠實穩重", "勤奮努力", "腳踏實地", "有責任感", "不怕吃苦", "有耐性", "穩如泰山", "值得信賴", "堅持原則", "內斂厚道"],
+      "虎": ["勇敢果斷", "領導特質", "行動力強", "不畏挑戰", "充滿自信", "有冒險精神", "目標明確", "鬥志旺盛", "英氣逼人", "決策果斷"],
+      "兔": ["溫柔親切", "心思細膩", "舉止優雅", "人緣良好", "富有同理", "內心堅強", "處事圓滑", "柔中帶剛", "具藝術氣息", "謙虛有禮"],
+      "龍": ["氣宇軒昂", "自信非凡", "具王者之風", "抱負遠大", "敢於創新", "不懼壓力", "責任心重", "具魅力", "領導能力強", "才華出眾"],
+      "蛇": ["智慧過人", "神秘冷靜", "思維敏捷", "目光銳利", "觀察力強", "懂得謀略", "深思熟慮", "氣質高雅", "堅定沉著", "謹慎果斷"],
+      "馬": ["活力充沛", "熱情洋溢", "勇於表現", "自由奔放", "開朗大方", "積極主動", "思路快速", "行動敏捷", "富有創意", "感染力強"],
+      "羊": ["善解人意", "溫順親切", "藝術氣質", "心思細膩", "注重美感", "待人友善", "體貼溫柔", "有包容力", "情感細膩", "有審美品味"],
+      "猴": ["聰穎靈巧", "機智多變", "反應快", "點子多", "幽默風趣", "善於學習", "觀察敏銳", "適應力強", "好奇心強", "多才多藝"],
+      "雞": ["做事認真", "目標明確", "守時守信", "負責盡職", "條理清晰", "細節控", "觀察細膩", "精打細算", "務實能幹", "自我要求高"],
+      "狗": ["忠誠可靠", "正直無私", "守護他人", "敏銳直覺", "善良真誠", "值得信賴", "熱心助人", "講義氣", "有安全感", "關懷細膩"],
+      "豬": ["心地善良", "樂觀寬厚", "處世和氣", "人緣極佳", "包容力強", "懂得享受", "不計較", "有福氣", "隨和自在", "誠懇務實"]
+    };
+
+    function getRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generate() {
+      const zodiac = document.getElementById("zodiac").value;
+      const blood = document.getElementById("blood").value;
+      const animal = document.getElementById("animal").value;
+      const mbti = document.getElementById("mbti").value.trim();
+
+      let result = getRandom(zodiacTraits[zodiac]) + "、" +
+                   getRandom(bloodTraits[blood]) + "、" +
+                   getRandom(animalTraits[animal]);
+
+      if (mbti) {
+        result += "，MBTI為" + mbti + "者潛力無窮";
+      }
+
+      document.getElementById("result").innerText = "你的特質是：" + result + "。夢想值得相信！";
+    }
+  </script>
+
+</body>
+</html>
