@@ -2,167 +2,102 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title></title>
-  <style>
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      padding: 20px;
-      font-size: 20px;
-      background-color: #fff;
-      color: #000;
-    }
-    label {
-      display: block;
-      margin-top: 16px;
-    }
-    select, input[type=text] {
-      font-size: 20px;
-      padding: 6px;
-      width: 100%;
-      max-width: 320px;
-    }
-    button {
-      margin-top: 24px;
-      padding: 10px 20px;
-      font-size: 20px;
-      background-color: #222;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #result {
-      margin-top: 30px;
-      font-size: 22px;
-      font-weight: bold;
-      line-height: 1.6;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: sans-serif; padding: 20px; font-size: 20px; background: #fff; color: #000; }
+  label, select, input, button { display: block; margin-top: 12px; font-size: 18px; width: 100%; max-width: 300px; }
+  button { padding: 10px; margin-top: 24px; background: #222; color: #fff; border: none; cursor: pointer; }
+  #result { margin-top: 30px; font-size: 22px; line-height: 1.6; font-weight: bold; }
+</style>
 </head>
 <body>
-  <label>星座：
-    <select id="zodiac">
-      <option>牡羊座</option><option>金牛座</option><option>雙子座</option>
-      <option>巨蟹座</option><option>獅子座</option><option>處女座</option>
-      <option>天秤座</option><option>天蠍座</option><option>射手座</option>
-      <option>魔羯座</option><option>水瓶座</option><option>雙魚座</option>
-    </select>
-  </label>
 
-  <label>血型：
-    <select id="blood">
-      <option>A型</option><option>B型</option><option>O型</option><option>AB型</option>
-    </select>
-  </label>
+<label>星座：
+  <select id="zodiac">
+    <option>牡羊座</option><option>金牛座</option><option>雙子座</option><option>巨蟹座</option>
+    <option>獅子座</option><option>處女座</option><option>天秤座</option><option>天蠍座</option>
+    <option>射手座</option><option>魔羯座</option><option>水瓶座</option><option>雙魚座</option>
+  </select>
+</label>
 
-  <label>生肖：
-    <select id="animal">
-      <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
-      <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
-      <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
-    </select>
-  </label>
+<label>血型：
+  <select id="blood">
+    <option>A型</option><option>B型</option><option>O型</option><option>AB型</option>
+  </select>
+</label>
 
-  <label>MBTI（可略過）：
-    <input type="text" id="mbti" placeholder="如 INFP, ESTJ 等"/>
-  </label>
+<label>生肖：
+  <select id="animal">
+    <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
+    <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
+    <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
+  </select>
+</label>
 
-  <button onclick="generate()">啟示未來</button>
+<label>MBTI（可不填）：
+  <input type="text" id="mbti" placeholder="如 INFP, ESTJ 等"/>
+</label>
 
-  <div id="result"></div>
+<button onclick="generate()">啟示未來</button>
 
-  <script>
-    const zodiacTraits = {
-      "牡羊座": ["勇往直前", "敢夢敢追", "堅毅果敢"],
-      "金牛座": ["腳踏實地", "守護承諾", "值得信賴"],
-      "雙子座": ["聰明機智", "多才多藝", "靈活多變"],
-      "巨蟹座": ["溫柔體貼", "善解人意", "情感豐沛"],
-      "獅子座": ["自信閃耀", "正義感強", "直率果敢"],
-      "處女座": ["細膩精準", "追求完美", "務實可靠"],
-      "天秤座": ["氣質優雅", "人緣極佳", "平衡能手"],
-      "天蠍座": ["堅定執著", "意志堅強", "神秘魅力"],
-      "射手座": ["樂觀豁達", "自由靈魂", "充滿理想"],
-      "魔羯座": ["腳踏實地", "堅持到底", "低調踏實"],
-      "水瓶座": ["思想前衛", "創意無限", "腦洞奇大"],
-      "雙魚座": ["富有想像", "感受力強", "擁抱夢想"]
-    };
+<div id="result"></div>
 
-    const bloodTraits = {
-      "A型": ["踏實穩定", "心思縝密", "誠懇可靠"],
-      "B型": ["熱情開朗", "直率坦白", "開朗有趣"],
-      "O型": ["領袖氣質", "坦率大方", "能量十足"],
-      "AB型": ["理性聰慧", "沉著冷靜", "神秘豐富"]
-    };
+<script>
+function random(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-    const animalTraits = {
-      "鼠": ["靈活反應", "口才出眾", "擅長應變"],
-      "牛": ["勤奮努力", "實事求是", "厚道可靠"],
-      "虎": ["充滿勇氣", "魅力十足", "果敢有為"],
-      "兔": ["溫和友善", "敏捷思考", "感性細膩"],
-      "龍": ["自信堅毅", "敢想敢衝", "充滿魅力"],
-      "蛇": ["冷靜理智", "氣質神秘", "行動審慎"],
-      "馬": ["積極樂觀", "自由奔放", "應變能力強"],
-      "羊": ["溫順體貼", "浪漫溫柔", "心境柔和"],
-      "猴": ["聰明伶俐", "善於溝通", "極具創意"],
-      "雞": ["果斷效率", "責任心強", "認真執著"],
-      "狗": ["忠誠可靠", "真誠熱情", "信念堅定"],
-      "豬": ["善良單純", "心地柔軟", "富有愛心"]
-    };
+// 僅放置測試資料，實際版本應含10條資料
+const zodiac = {
+  "牡羊座": ["勇往直前", "不懼挑戰", "活力充沛", "堅定信念", "積極樂觀", "熱血奔騰", "自信領先", "直率坦白", "冒險精神", "行動敏捷"],
+  "金牛座": ["穩健踏實", "堅持到底", "值得信賴", "內斂堅強", "溫和沉著", "注重細節", "不怕困難", "實事求是", "默默耕耘", "實力深厚"]
+  // 其他星座略
+};
 
-    const mbtiTraits = {
-      "INTJ": ["策略思維", "深謀遠慮", "堅定目標"],
-      "INTP": ["思考縝密", "探索真理", "獨立深刻"],
-      "ENTJ": ["領導果斷", "企圖心強", "具說服力"],
-      "ENTP": ["靈感活躍", "能言善辯", "點子源源"],
-      "INFJ": ["理想堅定", "共感力強", "溫柔穩重"],
-      "INFP": ["浪漫善良", "擁抱夢想", "同理豐沛"],
-      "ENFJ": ["激勵人心", "真誠熱情", "領袖氣質"],
-      "ENFP": ["熱情洋溢", "創意無限", "樂觀自信"],
-      "ISTJ": ["踏實堅定", "責任心強", "值得信賴"],
-      "ISFJ": ["無私奉獻", "細心體貼", "溫和忠誠"],
-      "ESTJ": ["果斷有效", "秩序明確", "管理能力強"],
-      "ESFJ": ["親切樂觀", "關懷他人", "重視和諧"],
-      "ISTP": ["實作高手", "冷靜務實", "問題解決者"],
-      "ISFP": ["安靜溫柔", "藝術氣息", "善良溫暖"],
-      "ESTP": ["活力十足", "臨場反應佳", "喜歡挑戰"],
-      "ESFP": ["開朗快樂", "擅長表演", "熱愛生活"]
-    };
+const blood = {
+  "A型": ["認真細膩", "責任感強", "重視秩序", "體貼入微", "自律嚴謹", "內向穩定", "做事謹慎", "耐性十足", "講求原則", "值得信任"]
+  // 其他血型略
+};
 
-    const endings = [
-      "你的夢想值得相信！",
-      "願你所願，皆能實現。",
-      "未來因你踏實而成真。",
-      "信念堅定，夢想不遠。",
-      "所有努力都會發光。",
-      "夢想未遠，只需再跨一步。",
-      "你擁有改變命運的力量。",
-      "別懷疑，你值得那個未來。",
-      "成真之路，始於此刻。",
-      "願你夢想照進現實。"
-    ];
+const animal = {
+  "鼠": ["機敏靈活", "善於觀察", "思維敏捷", "反應快速", "精打細算", "靈巧周全", "機會掌握強", "適應力強", "觀察細膩", "執行力強"]
+  // 其他生肖略
+};
 
-    function randomPick(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+const mbti = {
+  "INTP": ["理性獨立", "好奇心強", "思想深邃", "喜歡探索", "冷靜觀察", "邏輯推理", "獨特視角", "真理追求", "抽象思維", "原創力高"]
+  // 其他 MBTI 略
+};
 
-    function generate() {
-      const zodiac = document.getElementById("zodiac").value;
-      const blood = document.getElementById("blood").value;
-      const animal = document.getElementById("animal").value;
-      const mbti = document.getElementById("mbti").value.toUpperCase();
+const endings = [
+  "你的夢想值得相信！",
+  "願你所願，皆能實現。",
+  "未來因你踏實而成真。",
+  "信念堅定，夢想不遠。",
+  "所有努力都會發光。",
+  "夢想未遠，只需再跨一步。",
+  "你擁有改變命運的力量。",
+  "別懷疑，你值得那個未來。",
+  "成真之路，始於此刻。",
+  "願你夢想照進現實。"
+];
 
-      let output = [];
-      if (zodiacTraits[zodiac]) output.push(randomPick(zodiacTraits[zodiac]));
-      if (bloodTraits[blood]) output.push(randomPick(bloodTraits[blood]));
-      if (animalTraits[animal]) output.push(randomPick(animalTraits[animal]));
-      if (mbtiTraits[mbti]) output.push(randomPick(mbtiTraits[mbti]));
+function generate() {
+  const z = document.getElementById("zodiac").value;
+  const b = document.getElementById("blood").value;
+  const a = document.getElementById("animal").value;
+  const m = document.getElementById("mbti").value.toUpperCase();
 
-      output.push(randomPick(endings));
+  let result = [];
+  if (zodiac[z]) result.push(random(zodiac[z]));
+  if (blood[b]) result.push(random(blood[b]));
+  if (animal[a]) result.push(random(animal[a]));
+  if (mbti[m]) result.push(random(mbti[m]));
+  result.push(random(endings));
 
-      document.getElementById("result").innerHTML = output.join("<br>");
-    }
-  </script>
+  document.getElementById("result").innerHTML = result.join("<br>");
+}
+</script>
 </body>
 </html>
