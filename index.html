@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title></title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    select, input[type=text] {
+      font-size: 18px;
+      padding: 6px;
+      width: 100%;
+      max-width: 300px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <label>星座：
+    <select id="zodiac">
+      <option>牡羊座</option><option>金牛座</option><option>雙子座</option>
+      <option>巨蟹座</option><option>獅子座</option><option>處女座</option>
+      <option>天秤座</option><option>天蠍座</option><option>射手座</option>
+      <option>魔羯座</option><option>水瓶座</option><option>雙魚座</option>
+    </select>
+  </label>
+
+  <label>血型：
+    <select id="blood">
+      <option>A型</option><option>B型</option><option>O型</option><option>AB型</option>
+    </select>
+  </label>
+
+  <label>生肖：
+    <select id="animal">
+      <option>鼠</option><option>牛</option><option>虎</option><option>兔</option>
+      <option>龍</option><option>蛇</option><option>馬</option><option>羊</option>
+      <option>猴</option><option>雞</option><option>狗</option><option>豬</option>
+    </select>
+  </label>
+
+  <label>MBTI（可略過）：
+    <input type="text" id="mbti" placeholder="如 INFP, ESTJ 等"/>
+  </label>
+
+  <button onclick="generate()">啟示未來</button>
+
+  <div id="result"></div>
+
+  <script>
+    const zodiacTraits = {
+      "牡羊座": ["勇往直前", "充滿能量", "天生領袖", "敢夢敢追", "毫不退縮", "純真直率", "極具行動力", "堅毅果敢", "爆發力十足", "信念堅定"],
+      "金牛座": ["腳踏實地", "穩健可靠", "不輕言放棄", "細膩溫和", "守護承諾", "理財高手", "內心剛毅", "溫暖沉穩", "有始有終", "值得信賴"],
+      "雙子座": ["聰明機智", "反應超快", "適應力強", "多才多藝", "口才出眾", "創意豐富", "靈活多變", "擅長溝通", "心思靈巧", "樂觀向上"],
+      "巨蟹座": ["感性真摯", "溫柔體貼", "重情重義", "細心照顧", "直覺敏銳", "善解人意", "擁抱溫暖", "情感豐沛", "堅韌柔情", "富有包容"],
+      "獅子座": ["自信閃耀", "勇氣十足", "正義感強", "擅於激勵", "領導魅力", "敢於承擔", "氣場強大", "榮譽感強", "直率果敢", "追求卓越"],
+      "處女座": ["細膩精準", "條理分明", "追求完美", "一絲不苟", "責任心強", "眼光獨到", "邏輯清晰", "務實可靠", "心思細膩", "堅守原則"],
+      "天秤座": ["氣質優雅", "追求和諧", "公正無私", "審美出眾", "人緣極佳", "理性溫和", "善於協調", "態度圓融", "思想開放", "平衡能手"],
+      "天蠍座": ["堅定執著", "直覺敏銳", "深思熟慮", "情感濃烈", "洞察人心", "意志堅強", "忠誠可靠", "行動果決", "不懼黑暗", "神秘魅力"],
+      "射手座": ["樂觀豁達", "熱愛冒險", "自由靈魂", "心胸開闊", "求知若渴", "直率真誠", "擁抱變化", "充滿理想", "敢於嘗試", "快樂傳染源"],
+      "魔羯座": ["腳踏實地", "目標明確", "不怕辛苦", "極具耐力", "自我要求", "堅持到底", "擅長規劃", "執行力強", "內斂沉穩", "低調踏實"],
+      "水瓶座": ["思想前衛", "創意無限", "特立獨行", "理性冷靜", "博愛精神", "善於創新", "好奇心強", "追求真理", "拒絕平凡", "腦洞奇大"],
+      "雙魚座": ["富有想像", "同理心強", "浪漫多情", "藝術天賦", "內心柔軟", "心靈細膩", "感受力強", "溫暖善良", "善於療癒", "擁抱夢想"]
+    };
+
+    const bloodTraits = {
+      "A型": ["踏實穩定", "負責盡職", "溫柔體貼", "有條不紊", "心思縝密", "具備耐性", "待人謙和", "凡事盡心", "自律守信", "誠懇可靠"],
+      "B型": ["熱情開朗", "富有創意", "行動迅速", "直率坦白", "表達自我", "喜歡自由", "感染力強", "點子豐富", "開朗有趣", "勇於嘗新"],
+      "O型": ["領袖氣質", "包容力強", "坦率大方", "樂觀主義", "意志堅定", "擅於協調", "豪爽可靠", "充滿活力", "有魅力者", "能量十足"],
+      "AB型": ["理性聰慧", "沉著冷靜", "洞察敏銳", "個性獨立", "善於分析", "思路清晰", "兼具感性", "特立獨行", "淡定自若", "神秘豐富"]
+    };
+
+    const animalTraits = {
+      "鼠": ["機敏靈巧", "靈活反應", "擅於觀察", "懂得把握時機", "具備謀略", "行動快速", "充滿活力", "口才出眾", "聰明伶俐", "擅長應變"],
+      "牛": ["勤奮努力", "踏實穩重", "吃苦耐勞", "執著堅定", "責任感強", "實事求是", "值得信賴", "心思慎密", "默默耕耘", "厚道可靠"],
+      "虎": ["充滿勇氣", "富有正義感", "敢於突破", "活力十足", "具領導魅力", "膽識過人", "敢做敢當", "充滿魄力", "魅力十足", "果敢有為"],
+      "兔": ["溫和友善", "處事圓融", "心思細膩", "善解人意", "懂得體貼", "舉止優雅", "敏捷思考", "待人真誠", "擁抱和諧", "感性細膩"],
+      "龍": ["氣宇非凡", "自信堅毅", "有大志向", "領袖氣質", "富有熱情", "思維敏捷", "不怕挑戰", "敢想敢衝", "野心勃勃", "充滿魅力"],
+      "蛇": ["深謀遠慮", "冷靜理智", "智慧過人", "直覺敏銳", "善於策略", "思維縝密", "氣質神秘", "擅長洞察", "話少深思", "行動審慎"],
+      "馬": ["積極樂觀", "行動迅速", "富有激情", "熱情洋溢", "善於表達", "自由奔放", "直率坦誠", "勇往直前", "不拘小節", "應變能力強"],
+      "羊": ["溫順體貼", "富有美感", "善解人意", "心思細膩", "充滿愛心", "文靜內斂", "具藝術天賦", "浪漫溫柔", "容易共鳴", "心境柔和"],
+      "猴": ["聰明伶俐", "機靈敏捷", "應變快狠準", "善於溝通", "有趣風趣", "多才多藝", "喜歡挑戰", "反應靈敏", "極具創意", "擅長模仿"],
+      "雞": ["言行果斷", "計畫縝密", "極具效率", "注重細節", "誠實守信", "心思敏捷", "責任心強", "條理分明", "整潔自律", "認真執著"],
+      "狗": ["忠誠可靠", "保護意識強", "正直無私", "真誠熱情", "勇敢直率", "擅於守護", "重視義氣", "穩定踏實", "信念堅定", "忠心耿耿"],
+      "豬": ["善良單純", "溫和友愛", "內心豐富", "待人真誠", "心地柔軟", "誠信為本", "慷慨大方", "懂得享受", "感性可愛", "富有愛心"]
+    };
+
+    const mbtiTraits = {
+      "INFP": ["理想堅定", "溫柔真誠", "擁抱夢想", "善於表達", "富有創意", "理解深刻", "靈魂浪漫", "善感細膩", "有共鳴力", "溫暖治癒"],
+      "INTP": ["思考縝密", "創意豐富", "觀察敏銳", "靜水深流", "探索本質", "不流俗套", "邏輯通透", "知識廣博", "獨立深刻", "思想自由"],
+      "ENFP": ["熱情四射", "靈感閃耀", "社交高手", "富同理心", "能量滿滿", "心思活躍", "開朗有趣", "感性靈敏", "積極探索", "感染力強"],
+      "ISFJ": ["細膩關懷", "無私奉獻", "記憶力佳", "踏實溫和", "忠誠可靠", "重視承諾", "注重細節", "體貼入微", "樂於助人", "愛心滿滿"]
+    };
+
+    const endings = [
+      "你的夢想值得相信！",
+      "願你所願，皆能實現。",
+      "未來因你踏實而成真。",
+      "信念堅定，夢想不遠。",
+      "所有努力都會發光。",
+      "夢想未遠，只需再跨一步。",
+      "你擁有改變命運的力量。",
+      "別懷疑，你值得那個未來。",
+      "成真之路，始於此刻。",
+      "願你夢想照進現實。"
+    ];
+
+    function generate() {
+      const zodiac = document.getElementById("zodiac").value;
+      const blood = document.getElementById("blood").value;
+      const animal = document.getElementById("animal").value;
+      const mbti = document.getElementById("mbti").value.toUpperCase();
+
+      const zTrait = randomPick(zodiacTraits[zodiac]);
+      const bTrait = randomPick(bloodTraits[blood]);
+      const aTrait = randomPick(animalTraits[animal]);
+      const mTrait = mbtiTraits[mbti] ? randomPick(mbtiTraits[mbti]) : null;
+      const ending = randomPick(endings);
+
+      const traits = [`星座：${zTrait}`, `血型：${bTrait}`, `生肖：${aTrait}`];
+      if (mTrait) traits.push(`MBTI：${mTrait}`);
+
+      document.getElementById("result").innerHTML = traits.join("<br>") + "<br><br>" + ending;
+    }
+
+    function randomPick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+  </script>
+</body>
+</html>
